@@ -2,6 +2,7 @@ package com.shop.myshop.mapper;
 
 import com.shop.myshop.dto.ProductDto;
 import com.shop.myshop.dto.UserDto;
+import com.shop.myshop.dto.UserMinDto;
 import com.shop.myshop.model.Product;
 import com.shop.myshop.model.User;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +21,15 @@ public class UserMapper {
     public UserDto convertToDto(User user) {
         return modelMapper.map(user, UserDto.class);
     }
+    public UserMinDto convertToMinDto(User user) {
+        return modelMapper.map(user, UserMinDto.class);
+    }
 
     public List<UserDto> getConvertedUsers(List<User> users) {
         return users.stream().map(this::convertToDto).toList();
+    }
+
+    public List<UserMinDto> getConvertedUsersToMinDto(List<User> users) {
+        return users.stream().map(this::convertToMinDto).toList();
     }
 }

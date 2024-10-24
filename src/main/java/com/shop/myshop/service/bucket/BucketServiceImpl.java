@@ -2,6 +2,7 @@ package com.shop.myshop.service.bucket;
 
 import com.shop.myshop.exceptions.ResourceNotFoundException;
 import com.shop.myshop.model.Bucket;
+import com.shop.myshop.model.User;
 import com.shop.myshop.repository.BucketProductRepository;
 import com.shop.myshop.repository.BucketRepository;
 import lombok.RequiredArgsConstructor;
@@ -42,10 +43,11 @@ public class BucketServiceImpl implements BucketService{
     }
 
     @Override
-    public Long initializeNewBucket() {
+    public Long initializeNewBucket(User user) {
         Bucket newBucket = new Bucket();
         Long newCartId = bucketIdGenerator.incrementAndGet();
         newBucket.setId(newCartId);
+        newBucket.setUser(user);
         return bucketRepository.save(newBucket).getId();
     }
 

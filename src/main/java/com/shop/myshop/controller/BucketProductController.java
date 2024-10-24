@@ -18,14 +18,11 @@ public class BucketProductController {
     private final BucketService bucketService;
 
 
-    @PostMapping("/add-product") // http://localhost:8080/api/v1/buckets/add-product
-    public ResponseEntity<ApiResponse> addProductToBucket(@RequestParam(required = false) Long bucketId,
-                                                          @RequestParam Long productId,
-                                                          @RequestParam Integer quantity) {
+    @PostMapping("/add-product/{bucketId}/{productId}/{quantity}") // http://localhost:8080/api/v1/buckets/add-product/1/1/1
+    public ResponseEntity<ApiResponse> addProductToBucket(@PathVariable Long bucketId,
+                                                          @PathVariable Long productId,
+                                                          @PathVariable Integer quantity) {
         try {
-            if (bucketId == null) {
-                bucketId = bucketService.initializeNewBucket();
-            }
             bucketProductService.addProductToBucket(bucketId, productId, quantity);
             return ResponseEntity.ok(new ApiResponse("Add Item Success", null));
         } catch (ResourceNotFoundException e) {

@@ -2,12 +2,14 @@ package com.shop.myshop.controller;
 
 import com.shop.myshop.dto.ProductDto;
 import com.shop.myshop.dto.UserDto;
+import com.shop.myshop.dto.UserMinDto;
 import com.shop.myshop.exceptions.AlreadyExistsException;
 import com.shop.myshop.exceptions.ResourceNotFoundException;
 import com.shop.myshop.mapper.UserMapper;
 import com.shop.myshop.model.Product;
 import com.shop.myshop.model.User;
 import com.shop.myshop.response.ApiResponse;
+import com.shop.myshop.service.bucket.BucketService;
 import com.shop.myshop.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,15 +23,28 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("${api.prefix}/users")
+
 public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
+    private final BucketService bucketService;
 
     @GetMapping("") // http://localhost:8080/api/v1/users
     public ResponseEntity<ApiResponse> getAllUsers() {
         List<User> users = userService.getUsers();
-        List<UserDto> convertedUsers = userMapper.getConvertedUsers(users);
+        List<UserMinDto> convertedUsers = userMapper.getConvertedUsersToMinDto(users); // убрал отображение пароля
         return  ResponseEntity.ok(new ApiResponse("success", convertedUsers));
+    }
+    @PostMapping("") // http://localhost:8080/api/v1/users
+    public ResponseEntity<ApiResponse> createUser(@RequestBody UserDto userDtoReq) {
+        try {
+            User user = userService.createUser(userDtoReq);
+            UserMinDto userDto = userMapper.convertToMinDto(user); // убрал отображение пароля
+            bucketService.initializeNewBucket(user);
+            return ResponseEntity.ok(new ApiResponse("Create User Success!", userDto));
+        } catch (AlreadyExistsException e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
+        }
     }
 
     @GetMapping("/by-id/{userId}") // http://localhost:8080/api/v1/users/by-id/1
@@ -43,16 +58,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("") // http://localhost:8080/api/v1/users
-    public ResponseEntity<ApiResponse> createUser(@RequestBody UserDto userDtoReq) {
-        try {
-            User user = userService.createUser(userDtoReq);
-            UserDto userDto = userMapper.convertToDto(user);
-            return ResponseEntity.ok(new ApiResponse("Create User Success!", userDto));
-        } catch (AlreadyExistsException e) {
-            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
-        }
-    }
+
     @PutMapping("/update/{userId}") // http://localhost:8080/api/v1/users/update/1
     public ResponseEntity<ApiResponse> updateUser(@RequestBody UserDto userDtoReq, @PathVariable Long userId) {
         try {

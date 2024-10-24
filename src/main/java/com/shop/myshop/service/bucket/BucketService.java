@@ -1,6 +1,7 @@
 package com.shop.myshop.service.bucket;
 
 import com.shop.myshop.model.Bucket;
+import com.shop.myshop.model.User;
 
 import java.math.BigDecimal;
 
@@ -11,7 +12,7 @@ public interface BucketService {
 
     BigDecimal getTotalPrice(Long id);
 
-    Long initializeNewBucket();
+    Long initializeNewBucket(User user);
 
     Bucket getBucketByUserId(Long userId);
 }

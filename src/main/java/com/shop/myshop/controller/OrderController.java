@@ -18,8 +18,8 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
 
-    @PostMapping("/order")
-    public ResponseEntity<ApiResponse> createOrder(@RequestParam Long userId) {
+    @PostMapping("/{userId}") // http://localhost:8080/api/v1/orders/1
+    public ResponseEntity<ApiResponse> createOrder(@PathVariable Long userId) {
         try {
             Order order =  orderService.placeOrder(userId);
             return ResponseEntity.ok(new ApiResponse("Item Order Success!", order));
@@ -28,7 +28,7 @@ public class OrderController {
         }
     }
 
-    @GetMapping("/{orderId}/order")
+    @GetMapping("/{orderId}")
     public ResponseEntity<ApiResponse> getOrderById(@PathVariable Long orderId) {
         try {
             OrderDto order = orderService.getOrder(orderId);
@@ -38,7 +38,7 @@ public class OrderController {
         }
     }
 
-    @GetMapping("/{userId}/order")
+    @GetMapping("/users/{userId}")
     public ResponseEntity<ApiResponse> getUserOrders(@PathVariable Long userId) {
         try {
             List<OrderDto> order = orderService.getUserOrders(userId);
