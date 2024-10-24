@@ -21,7 +21,7 @@ public class BucketController {
     private final BucketService bucketService;
     private final BucketMapper bucketMapper;
 
-    @GetMapping("/by-id/{bucketId}") //  http://localhost:8080/api/v1/buckets/by-id/1
+    @GetMapping("/{bucketId}") //  http://localhost:8080/api/v1/buckets/1
     public ResponseEntity<ApiResponse> getBucket(@PathVariable Long bucketId) {
         try {
             Bucket bucket = bucketService.getBucket(bucketId);
@@ -42,7 +42,7 @@ public class BucketController {
         }
     }
 
-    @GetMapping("/{bucketId}/total-price") // http://localhost:8080/api/v1/buckets/1/total-price
+    @GetMapping("/total-price/{bucketId}") // http://localhost:8080/api/v1/buckets/total-price/1
     public ResponseEntity<ApiResponse> getTotalAmount( @PathVariable Long bucketId) {
         try {
             BigDecimal totalPrice = bucketService.getTotalPrice(bucketId);
