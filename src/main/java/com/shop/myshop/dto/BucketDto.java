@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Data
 public class BucketDto {
-    private Long cartId;
-    private Set<BucketProductDto> items;
+    private Long id;
     private BigDecimal totalAmount;
+    private String firstName;
 }

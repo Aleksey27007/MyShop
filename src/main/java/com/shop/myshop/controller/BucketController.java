@@ -1,6 +1,8 @@
 package com.shop.myshop.controller;
 
+import com.shop.myshop.dto.BucketDto;
 import com.shop.myshop.exceptions.ResourceNotFoundException;
+import com.shop.myshop.mapper.BucketMapper;
 import com.shop.myshop.model.Bucket;
 import com.shop.myshop.response.ApiResponse;
 import com.shop.myshop.service.bucket.BucketService;
@@ -17,12 +19,14 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RequestMapping("${api.prefix}/buckets")
 public class BucketController {
     private final BucketService bucketService;
+    private final BucketMapper bucketMapper;
 
     @GetMapping("/by-id/{bucketId}") //  http://localhost:8080/api/v1/buckets/by-id/1
     public ResponseEntity<ApiResponse> getBucket(@PathVariable Long bucketId) {
         try {
             Bucket bucket = bucketService.getBucket(bucketId);
-            return ResponseEntity.ok(new ApiResponse("Success", bucket));
+            BucketDto bucketDto = bucketMapper.convertToDto(bucket);
+            return ResponseEntity.ok(new ApiResponse("Success", bucketDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }
